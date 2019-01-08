@@ -1,56 +1,70 @@
-# README
+# Shadowsocks Client
 
-本项目的计划在deepin上实现win版ss的功能
+Shadowsocks Client: If you want to keep a secret, you must also hide it from yourself.
 
-#### 安装依赖
+Thanks a lot for [Deepin System Monitor](https://github.com/linuxdeepin/deepin-system-monitor), [Shadowsocks for Windows](https://github.com/shadowsocks/shadowsocks-windows),
+[libQtShadowsocks](https://github.com/shadowsocks/libQtShadowsocks).
+
+[English](./doc/README.en.md)
+
+开发这个软件用到的原理，技术请参考[影梭客户端原理剖析](doc/影梭客户端原理剖析.md)
+
+关于这个软件的开发进展，可以去deepin论坛，看[这个帖子](https://bbs.deepin.org/forum.php?mod=viewthread&tid=142900)
+
+## 与其他客户端的比较
+
+|                    | [ss-win](https://github.com/shadowsocks/shadowsocks-csharp) | [ssx-ng](https://github.com/shadowsocks/ShadowsocksX-NG) | [ss-qt5](https://github.com/shadowsocks/shadowsocks-qt5) | [ss-android](https://github.com/shadowsocks/shadowsocks-android) | ss-client |
+| ------------------ | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- | --------- |
+| System Proxy       | ✓                                        | ✓                                        | ✗                                        | ✓                                        | ✓         |
+| CHNRoutes          | ✓                                        | ✓                                        | ✗                                        | ✓                                        | ✗         |
+| PAC Configuration  | ✓                                        | ✓                                        | ✗                                        | ✗                                        | ✓         |
+| Profile Switching  | ✓                                        | ✓                                        | ✓                                        | ✓                                        | ✓         |
+| QR Code Scan       | ✓                                        | ✓                                        | ✓                                        | ✓                                        | ✓         |
+| QR Code Generation | ✓                                        | ✓                                        | ✓                                        | ✓                                        | ✓         |
+
+
+
+## 使用
+建议直接下载我打包好的deb包 [最新发布](https://github.com/PikachuHy/shadowsocks-client/releases)
+
+日志文字存储在`~/.cache/pikachu/shadowsocks-client/`
+
+###  PAC配置
+
+默认使用pac配置文件，`https://raw.githubusercontent.com/PikachuHy/shadowsocks-client/master/autoproxy.pac`
+
+如果需要自己配置pac文件，可以使用genpac
+
+使用命令
 
 ```shell
-sudo apt install libqtshadowsocks-dev
-sudo apt install libssl-dev libbotan1.10-dev
-```
-#### win版功能对照
-
-1. 系统代理设置
-2. PAC 模式和全局模式
-3. [GFWList](https://github.com/gfwlist/gfwlist) 和用户规则
-4. 支持 HTTP 代理
-5. 支持多服务器切换
-6. 支持 UDP 代理
-
-#### 当前进度
-
-- 配合proxychains,能够进行代理
-- 能够在PAC模式和全局模式之间切换
-
-ui界面
-
-![ui界面](./ui.gif)
-
-### 说明
-
-由于目前还很简陋，大量配置是写死的。
-
-在使用前，需要自己有ss的账号。
-
-ss配置文件在/etc/ss/ss.json
-
-ss.json示例
-
-```json
-{
-"server":"server addr",
-"server_port":20526,
-"local_address":"127.0.0.1",
-"local_port":1080,
-"password":"password",
-"timeout":300,
-"method":"aes-256-cfb",
-"fast_open":false
-}
+genpac --format pac --pac-proxy "SOCKS5 127.0.0.1:1080" > autoproxy.pac
 ```
 
-更详细的请参考官网[shadowsocks Quick Guide](http://shadowsocks.org/en/config/quick-guide.html)
+即可以生成需要的pac文件
 
-pac文件也放在/etc/ss下。项目中附带一个可用的pac文件。
+## Develop
 
-我后面会写界面去调的。
+[CLion 2017.3](https://www.jetbrains.com/clion/) & [Qt 5.6](https://www.qt.io/) are required.
+
+```shell
+sudo apt update 
+sudo apt install qt5-default qttools5-dev-tools -y
+sudo apt install libdtkbase-dev libdtkwidget-dev -y
+sudo apt install libdframeworkdbus-dev -y
+sudo apt install libqrencode-dev libzbar-dev -y
+sudo apt install libdtkbase-dev libdtkcore-dev libdtksettings-dev libdtksettingsview-dev libdtkutil-dev libdtkwidget-dev libdtkwm-dev -y
+sudo apt install dh-make fakeroot -y
+cd shadowsocks-client
+mkdir build && cd build
+cmake ..
+make -j4
+./shadowsocks-client
+```
+
+特别注意，需要Botan2.3以上版本，libQtShadowsocks 2.0.2以上版本
+
+### License
+
+Shadowsocks Client is licensed under [GPLv3](LICENSE).
+
